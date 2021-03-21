@@ -34,6 +34,11 @@ impl InputPoll {
     }
 
     pub fn start_polling(&mut self) {
+        // We should always have only one thread running.
+        if self.thread.is_some() {
+            return;
+        }
+
         self.running.store(true, Ordering::SeqCst);
         let socket = self.socket.clone();
         let running = self.running.clone();
@@ -51,7 +56,7 @@ impl InputPoll {
                 // TODO: Revisit this once Melon checks the endianness issue.
                 let result = buff
                     .chunks_exact(4)
-                    .map(|x| f32::from_bits(u32::from_be_bytes(x.try_into().unwrap())))
+                    .map(|x| f32::from_ne_bytes((*x).try_into().unwrap()))
                     .collect::<Vec<f32>>()
                     .try_into()
                     .unwrap();
@@ -75,18 +80,17 @@ impl InputPoll {
             }
 
             Err(std::sync::mpsc::TryRecvError::Empty) => Ok(()),
-            Err(e) => Err(e.into())
+            Err(e) => Err(e.into()),
         }
     }
 
-    pub fn stop_polling(&mut self) -> Result<(), Box<dyn std::error::Error>> {
+    fn stop_polling(&mut self) -> Result<(), Box<dyn std::error::Error>> {
         println!("Stopping poll");
         self.running.store(false, Ordering::SeqCst);
 
         if let Some(t) = self.thread.take() {
-            t.join().unwrap();
-        } else {
-            return Err("No thread was started".into());
+            t.join()
+                .or(Err("Couldn't stop the input polling thread".to_string()))?;
         }
 
         Ok(())
