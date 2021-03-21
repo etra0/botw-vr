@@ -1,4 +1,3 @@
-#![feature(get_mut_unchecked)]
 use memory_rs::internal::{
     injections::{Detour, Inject, Injection},
     memory::resolve_module_path,
@@ -194,7 +193,7 @@ fn patch(_lib: LPVOID) -> Result<(), Box<dyn std::error::Error>> {
             break;
         }
 
-        input_poll.get_input(&mut input);
+        input_poll.get_input(&mut input)?;
         // dbg!(&input);
 
         input.is_active = active;
