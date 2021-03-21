@@ -195,7 +195,7 @@ fn patch(_lib: LPVOID) -> Result<(), Box<dyn std::error::Error>> {
         }
 
         input_poll.get_input(&mut input);
-        dbg!(&input);
+        // dbg!(&input);
 
         input.is_active = active;
         if input.change_active {
@@ -235,7 +235,7 @@ fn patch(_lib: LPVOID) -> Result<(), Box<dyn std::error::Error>> {
 
         input.reset();
 
-        std::thread::sleep(std::time::Duration::from_millis(10));
+        // std::thread::sleep(std::time::Duration::from_millis(10));
     }
 
     Ok(())

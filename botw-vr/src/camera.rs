@@ -108,9 +108,9 @@ impl GameCamera {
         speed_y: f32,
     ) -> (f32, f32, f32) {
         // use spherical coordinates to add speed
-        let theta = speed_x * glm::pi::<f32>() / 180.;
+        let theta = speed_x.to_radians();
 
-        let phi = speed_y * glm::pi::<f32>() / 180.;
+        let phi = (speed_y + 90.).to_radians();
 
         let r = 2.; //(cam_x.powi(2) + cam_y.powi(2) + cam_z.powi(2)).sqrt();
 
@@ -137,17 +137,4 @@ impl GameCamera {
         m_new.fixed_rows::<glm::U1>(1).transpose().xyz()
     }
 
-    pub fn clamp_distance(&mut self, point: &glm::Vec3) {
-        let cp = glm::Vec3::from(self.pos);
-        let cf = glm::Vec3::from(self.focus);
-        let delta_view = cf - cp;
-        let distance = glm::l2_norm(&(point - cp));
-        if distance > 400. {
-            let norm = glm::normalize(&(cp - point));
-            let new_point: glm::Vec3 = *point + norm * 380.;
-
-            self.pos = new_point.into();
-            self.focus = Vec3BE::from(new_point + delta_view);
-        }
-    }
 }

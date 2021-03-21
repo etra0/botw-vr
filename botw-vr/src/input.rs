@@ -64,6 +64,7 @@ impl InputPoll {
             .map(|x| f32::from_bits(x.to_be()))
             .collect::<Vec<f32>>();
         input.delta_focus = (buff[4], buff[3]);
+        // input.delta_rotation = buff[5];
     }
 
     pub fn stop_polling(self) -> Result<(), String> {
