@@ -50,11 +50,6 @@ pub fn check_key_press(key: i32) -> bool {
     (unsafe { winuser::GetAsyncKeyState(key) } as u32) & 0x8000 != 0
 }
 
-pub fn calc_eucl_distance(a: &glm::Vec3, b: &glm::Vec3) -> f32 {
-    let diff = a - b;
-    glm::l2_norm(&diff)
-}
-
 #[derive(Default, Debug)]
 pub struct Input {
     pub engine_speed: f32,
@@ -176,40 +171,13 @@ pub fn handle_keyboard(input: &mut Input) {
             [winuser::VK_NEXT, winuser::VK_PRIOR, input.delta_rotation += 0.02, input.delta_rotation -= 0.02];
 
             //  FoV
-            [winuser::VK_F5, winuser::VK_F6, input.fov -= 0.02, input.fov += 0.02];
+            [winuser::VK_F5, winuser::VK_F6, input.fov -= 1e-4, input.fov += 1e-4];
 
             [winuser::VK_F3, winuser::VK_F4, input.speed_multiplier -= 0.01, input.speed_multiplier += 0.01];
 
         }
     }
 
-    if check_key_press(Keys::P as _) {
-        input.dolly_duration += input.dolly_increment;
-        input.dolly_increment *= 1.01;
-        println!("Duration: {}", input.dolly_duration);
-    } else if check_key_press(Keys::O as _) {
-        input.dolly_duration -= input.dolly_increment;
-        input.dolly_increment *= 1.01;
-        println!("Duration: {}", input.dolly_duration);
-    } else {
-        input.dolly_increment = 0.01
-    }
-
-    if check_key_press(winuser::VK_LSHIFT) {
-        input.delta_pos.0 *= 8.;
-        input.delta_pos.1 *= 8.;
-        input.delta_altitude *= 8.;
-    }
-
-    if check_key_press(winuser::VK_TAB) {
-        input.delta_pos.0 *= 0.2;
-        input.delta_pos.1 *= 0.2;
-        input.delta_altitude *= 0.2;
-    }
-
-    input.delta_pos.0 *= input.speed_multiplier;
-    input.delta_pos.1 *= input.speed_multiplier;
-    input.delta_altitude *= input.speed_multiplier;
 }
 
 pub fn error_message(message: &str) {

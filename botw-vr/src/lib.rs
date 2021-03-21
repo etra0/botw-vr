@@ -188,8 +188,8 @@ fn patch(_lib: LPVOID) -> Result<(), Box<dyn std::error::Error>> {
 
     loop {
         handle_keyboard(&mut input);
+        input.sanitize();
         if input.deattach || check_key_press(winuser::VK_HOME) {
-            input_poll.stop_polling()?;
             info!("Exiting");
             break;
         }
@@ -230,10 +230,9 @@ fn patch(_lib: LPVOID) -> Result<(), Box<dyn std::error::Error>> {
                 continue;
             }
 
+            // dbg!(&input);
             (*gc).consume_input(&input);
         }
-
-        input.reset();
 
         // std::thread::sleep(std::time::Duration::from_millis(10));
     }

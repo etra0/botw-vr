@@ -13,10 +13,6 @@ asm_get_camera_data PROC
     mov [g_camera_struct], rbx
     pop rbx
 
-    cmp g_camera_active, 0
-    je original
-    jmp ending
-
     original:
     movbe [r13 + rax + 5c4h], r14d
     cvtss2sd xmm0, xmm0

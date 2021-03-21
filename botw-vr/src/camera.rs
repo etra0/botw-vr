@@ -74,7 +74,7 @@ impl GameCamera {
             r_cam_z,
             r_cam_y,
             input.delta_focus.0,
-            input.delta_focus.1,
+            input.delta_focus.1
         );
 
         // self.pos.0[0] =
@@ -94,9 +94,7 @@ impl GameCamera {
 
         let pos_ = glm::Vec3::from(self.pos);
         let focus_ = glm::Vec3::from(self.focus);
-        let result = GameCamera::calculate_rotation(focus_, pos_, input.delta_rotation);
-        self.rot = result.into();
-
+        self.rot = GameCamera::calculate_rotation(focus_, pos_, input.delta_rotation).into();
         self.fov = input.fov.to_u32();
     }
 
